@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <<<----- 1. แก้ไข Title ของเว็บ ----- >>> -->
-    <title>B2S ใบยืนยันยอด</title>
+    <title>Moshi ใบยืนยันยอด</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -91,7 +91,7 @@
     <div class="main-container">
         <div class="upload-card">
             <!-- <<<----- 2. แก้ไขหัวข้อของเว็บ ----- >>> -->
-            <h1>B2S ใบยืนยันยอด</h1>
+            <h1>Moshi ใบยืนยันยอด</h1>
             <div id="print-test-display" class="hidden"></div>
             <div class="action-buttons">
                 <label for="fileUpload" class="action-btn upload-button">เลือกไฟล์ Excel</label>
@@ -110,8 +110,8 @@
         // <<<----- 3. แก้ไข ชื่อ/ที่อยู่ลูกค้า ----- >>>
         const customers = {
             "moshi": {
-                name: "บริษัท  บีทูเอส จำกัด  (สำนักงานใหญ่) ",
-                address: "919/555  ชั้น16,17   อาคารจิวเวลรี่เทรดเซ็นเตอร์   ถนนสีลม แขวงสีลม   เขตบางรัก  กรุงเทพมหานคร  10500 เลขประจำตัวผู้เสียภาษี  0105538032743"
+                name: "บริษัท โมชิ โมชิ รีเทล คอร์ปอเรชั่น จำกัด (มหาชน) สำนักงานใหญ่",
+                address: "ศูนย์การค้าเดอะมอลล์ ท่าพระ ห้องเลขที่ 801-802,807 ชั้น 8 และชั้น 9 เลขที่ 129 ถนนรัชดาภิเษก (ท่าพระ-ตากสิน) แขวงบุคคโล เขตธนบุรี กรุงเทพมหานคร 10600"
             }
         };
         // <<<----- 4. แก้ไขค่าธรรมเนียม ----- >>>
@@ -477,7 +477,7 @@
             const preVatAmount = gpAmount / (1 + vatRate);
             const vatAmount = preVatAmount * vatRate;
             const whtAmount = preVatAmount * whtRate;
-            const netTransferAmount = gpAmount - whtAmount;
+            const netTransferAmount = gpAmount; // ยอดโอนสุทธิ = ส่วนแบ่ง GP
 
             const gpText = `คิดเป็นส่วนแบ่ง GP (${(gpRate * 100).toFixed(0)}%)`;
 
@@ -490,7 +490,7 @@
                 <div class="summary-row"><span class="summary-label" style="color: blue;">ยอดก่อน VAT</span><span class="summary-value">${formatCurrency(preVatAmount)} บาท</span></div>
                 <div class="summary-row"><span class="summary-label" style="color: red;">Vat ${(vatRate * 100).toFixed(0)}%</span><span class="summary-value">${formatCurrency(vatAmount)} บาท</span></div>
                 <div class="summary-row"><span class="summary-label">คิดเป็นส่วนแบ่ง GP</span><span class="summary-value">${formatCurrency(gpAmount)} บาท</span></div>
-                <div class="summary-row"><span class="summary-label" style="color: red;">ภาษีหัก ณ ที่จ่าย ${whtRate * 100}%</span><span class="summary-value">${formatCurrency(whtAmount)} บาท</span></div>
+                <div class="summary-row"><span class="summary-label" style="color: red;">ภาษีหัก ณ ที่จ่าย ทาง B2S เป็นผู้นำส่งสรรพากร</span><span class="summary-value">${formatCurrency(whtAmount)} บาท</span></div>
                 <div class="summary-row summary-total"><span class="summary-label" style="color: blue;">ยอดโอนสุทธิ</span><span class="summary-value">${formatCurrency(netTransferAmount)} บาท</span></div>
             </div>
             <div class="invoice-footer"><p><strong>หมายเหตุ:</strong> หลังจากได้รับการโอนเงินแล้ว กรุณาส่งเอกสารใบเสร็จรับเงินพร้อมใบกำกับภาษีกลับมาให้บัญชี (ที่อยู่ตามใบยืนยันยอด) ขอบคุณค่ะ</p></div>`;
