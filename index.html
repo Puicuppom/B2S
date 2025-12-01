@@ -109,7 +109,7 @@
 
         // <<<----- 3. แก้ไข ชื่อ/ที่อยู่ลูกค้า ----- >>>
         const customers = {
-            "moshi": {
+            "B2S": {
                 name: "บริษัท  บีทูเอส จำกัด  (สำนักงานใหญ่) ",
                 address: "919/555  ชั้น16,17   อาคารจิวเวลรี่เทรดเซ็นเตอร์   ถนนสีลม  แขวงสีลม   เขตบางรัก  กรุงเทพมหานคร  10500 เลขประจำตัวผู้เสียภาษี  0105538032743"
             }
@@ -330,7 +330,7 @@
             processedPriceData.forEach((priceInfo, index) => {
                 const currentPrice = priceInfo['ราคาขายต่อหน่วย'];
                 const docSuffix = (docSuffixBase + index).toString().padStart(4, '0');
-                const docNumber = `MOS${docYear}${docSuffix}`;
+                const docNumber = `B2S${docYear}${docSuffix}`;
 
                 const invoiceData = allSalesData.filter(d => d.priceCategory === currentPrice);
                 
@@ -623,3 +623,4 @@
     </script>
 </body>
 </html>
+
