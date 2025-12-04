@@ -307,7 +307,8 @@
             const { branchSummary, productSummary, paymentSummary, priceSummary } = calculateSummaries(dataToProcess);
             const thLocaleCompare = (a, b) => String(a).localeCompare(b, 'th');
 
-            processedBranchData = Object.keys(branchSummary).map(key => ({ 'BranchName': key, 'จำนวนรวม': branchSummary[key].totalQuantity, 'ยอดขายรวม': branchSummary[key].totalAmount })).sort((a, b) => thLocaleCompare(a['BranchName'], b['BranchName']));
+            processedBranchData = Object.keys(branchSummary).map(key => ({ 'BranchName': key, 'จำนวนรวม': branchSummary[key].totalQuantity, 'ยอดขายรวม': branchSummary[key].totalAmount }))
+                .sort((a, b) => parseInt(a['BranchName']) - parseInt(b['BranchName']));
             processedProductData = Object.keys(productSummary).map(key => ({ 'สินค้า': key, 'จำนวนรวม': productSummary[key].totalQuantity, 'ยอดขายรวม': productSummary[key].totalAmount })).sort((a, b) => thLocaleCompare(a['สินค้า'], b['สินค้า']));
             processedPriceData = Object.keys(priceSummary).map(key => ({ 'ราคาขายต่อหน่วย': parseFloat(key), 'จำนวนรวม': priceSummary[key].totalQuantity, 'ยอดขายรวม': priceSummary[key].totalAmount })).sort((a, b) => a['ราคาขายต่อหน่วย'] - b['ราคาขายต่อหน่วย']);
             processedPaymentData = Object.keys(paymentSummary).map(key => ({ 'ช่องทางชำระเงิน': key, 'ยอดรวม': paymentSummary[key].totalAmount }))
@@ -335,7 +336,8 @@
                 const invoiceData = allSalesData.filter(d => d.priceCategory === currentPrice);
                 
                 const { branchSummary, productSummary, paymentSummary } = calculateSummaries(invoiceData);
-                const invBranchData = Object.keys(branchSummary).map(key => ({ 'BranchName': key, 'จำนวนรวม': branchSummary[key].totalQuantity, 'ยอดขายรวม': branchSummary[key].totalAmount })).sort((a, b) => String(a['BranchName']).localeCompare(b['BranchName'], 'th'));
+                const invBranchData = Object.keys(branchSummary).map(key => ({ 'BranchName': key, 'จำนวนรวม': branchSummary[key].totalQuantity, 'ยอดขายรวม': branchSummary[key].totalAmount }))
+.sort((a, b) => parseInt(a['BranchName']) - parseInt(b['BranchName']));
                 const invProductData = Object.keys(productSummary).map(key => ({ 'สินค้า': key, 'จำนวนรวม': productSummary[key].totalQuantity, 'ยอดขายรวม': productSummary[key].totalAmount })).sort((a, b) => String(a['สินค้า']).localeCompare(b['สินค้า'], 'th'));
                 const invPaymentData = Object.keys(paymentSummary).map(key => ({ 'ช่องทางชำระเงิน': key, 'ยอดรวม': paymentSummary[key].totalAmount })).filter(p => p['ช่องทางชำระเงิน'].toLowerCase().trim() !== 'discfree');
         
@@ -408,11 +410,21 @@
                 const canvas = await html2canvas(invoiceElement, { scale: 3, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                
+                // --- START: โค้ดที่แก้ไข ---
+                const margin = 15; // กำหนดขอบกระดาษ (หน่วยเป็น mm)
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const imgProps = pdf.getImageProperties(imgData);
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                // คำนวณความกว้างของรูปภาพใหม่โดยหักลบขอบซ้าย-ขวา
+                const widthInMargin = pdfWidth - (margin * 2);
+                // คำนวณความสูงของรูปภาพใหม่เพื่อรักษาสัดส่วนเดิม
+                const heightInMargin = (imgProps.height * widthInMargin) / imgProps.width;
+
+                // เพิ่มรูปภาพลงใน PDF โดยกำหนดตำแหน่ง x, y ที่ค่า margin และใช้ขนาดใหม่
+                pdf.addImage(imgData, 'PNG', margin, margin, widthInMargin, heightInMargin);
+                // --- END: โค้ดที่แก้ไข ---
+
                 pdf.save(`${fileName}.pdf`);
                 
                 await new Promise(resolve => setTimeout(resolve, 500));
